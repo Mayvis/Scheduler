@@ -9,6 +9,9 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "default-passive-events": "^2.0.0",
+    "element-ui": "^2.15.1",
+    "portal-vue": "^2.1.7",
     "vue": "^2.6.11"
   },
   "devDependencies": {
