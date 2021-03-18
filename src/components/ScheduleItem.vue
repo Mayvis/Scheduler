@@ -56,8 +56,7 @@ export default {
       })),
       currentIndex: null,
       parentNode: null,
-      resizeState: false,
-      direction: "right"
+      resizeState: false
     };
   },
   created() {
@@ -268,7 +267,7 @@ export default {
       }));
     },
     handleDragStart() {
-      //
+      console.log("drag");
     },
     currentCubeIndex(left) {
       let index = Math.floor((left - this.width) / this.width);
