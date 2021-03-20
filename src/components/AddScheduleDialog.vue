@@ -17,12 +17,8 @@
         >
         </el-time-picker>
       </el-form-item>
-      <el-form-item label="Title" prop="title">
-        <el-input
-          v-model="form.title"
-          maxlength="15"
-          show-word-limit
-        ></el-input>
+      <el-form-item label="Name" prop="name">
+        <el-input v-model="form.name" maxlength="15" show-word-limit></el-input>
       </el-form-item>
       <el-form-item label="Description" prop="description">
         <el-input
@@ -37,11 +33,11 @@
       <el-form-item label="Interval" prop="interval">
         <el-input-number v-model="form.interval" :min="1"></el-input-number>
       </el-form-item>
-      <el-form-item label="Week Reapeat" prop="repeat">
-        <el-checkbox-group v-model="form.repeat" size="small">
+      <el-form-item label="Week Reapeat" prop="dayOfWeek">
+        <el-checkbox-group v-model="form.dayOfWeek" size="small">
           <el-checkbox-button
             v-for="{ name, value } in weeks"
-            :label="name"
+            :label="value"
             :key="value"
             >{{ name }}</el-checkbox-button
           >
@@ -56,6 +52,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   props: {
     visible: {
@@ -67,11 +65,16 @@ export default {
     return {
       form: {
         time: [null, null],
-        title: "",
+        name: "",
         description: "",
         color: "",
         interval: 1,
-        repeat: []
+        dayOfWeek: [],
+        fileId: 1,
+        group_id: 1,
+        period: true,
+        enable: true,
+        groupIdList: [1, 2]
       },
       rules: {
         time: [
@@ -81,8 +84,8 @@ export default {
             trigger: "blur"
           }
         ],
-        title: [
-          { required: true, message: "Please enter title.", trigger: "blur" },
+        name: [
+          { required: true, message: "Please enter name.", trigger: "blur" },
           { max: 15, message: "The max length is 15.", trigger: "change" }
         ],
         description: [
@@ -98,7 +101,7 @@ export default {
             trigger: "change"
           }
         ],
-        repeat: [
+        dayOfWeek: [
           {
             type: "array",
             required: true,
@@ -118,17 +121,46 @@ export default {
       ]
     };
   },
+  created() {
+    this.setDefaultTime();
+  },
   methods: {
+    setDefaultTime() {
+      const now = new Date();
+      now.setHours(8);
+      now.setMinutes(0);
+      now.setSeconds(0);
+      this.form.time[0] = now;
+      this.form.time[1] = now;
+    },
     handleClose() {
       this.$confirm("Are you sure to close this dialog?")
         .then(() => {
-          this.$emit("close-dialog", { visible: !this.visible });
+          this.emitClose();
         })
         .catch(() => {});
     },
+    emitClose() {
+      this.$emit("close-dialog", { visible: !this.visible });
+    },
     handleSubmit() {
-      this.$refs.form.validate(valid => {
-        console.log(valid);
+      this.$refs.form.validate(async valid => {
+        if (valid) {
+          const form = Object.assign({}, this.form);
+          form.schedule = [];
+          for (let i = 0; i < form.time.length; i++) {
+            if ((i + 1) % 2 === 0) {
+              form.schedule[i - 1].end = form.time[i];
+            } else {
+              form.schedule[i] = {};
+              form.schedule[i].start = form.time[i];
+            }
+          }
+          delete form.time;
+          const res = await axios.post("http://localhost:5000/schedule", form);
+          console.log(res);
+          this.emitClose();
+        }
       });
     }
   }
