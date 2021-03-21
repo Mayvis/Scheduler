@@ -2,13 +2,8 @@
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Schedule extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
+    static associate({ File }) {
+      this.hasOne(File, { foreignKey: "id", sourceKey: "file_id" });
     }
   }
   Schedule.init(
@@ -51,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         type: DataTypes.BIGINT,
         references: {
-          model: "file",
+          model: "File",
           key: "id"
         }
       },
@@ -77,7 +72,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       timestamps: false, // remove createdAt, updatedAt table column
-      tableName: "schedule",
+      tableName: "schedules",
       modelName: "Schedule"
     }
   );

@@ -1,4 +1,4 @@
-const { sequelize, Schedule } = require("./models");
+const { sequelize, Schedule, File } = require("./models");
 const express = require("express");
 const cors = require("cors");
 const PORT = 5000;
@@ -13,8 +13,9 @@ app.get("/schedule", async (req, res) => {
   try {
     const schedules = await Schedule.findAll({
       attributes: {
-        exclude: ["created_at", "updated_at"]
-      }
+        exclude: ["file_id", "created_at", "updated_at"]
+      },
+      include: [File]
     });
     return res.json(schedules);
   } catch (error) {
