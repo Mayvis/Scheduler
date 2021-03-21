@@ -22,14 +22,14 @@
             class="schedule-title"
             :style="{ height: tableCellHeight + 'px' }"
           >
-            {{ name }}
+            {{ name }} {{ handleTime(value) }}
           </th>
           <td
             class="schedule-item"
             :style="{ height: tableCellHeight + 'px' }"
             v-for="(_, index) in week"
             :key="index"
-            @dblclick="showDialog(value, index)"
+            @dblclick="showDialog(value, 0)"
           ></td>
         </tr>
         <tr :key="value + '-2'" class="schedule-side">
@@ -41,7 +41,7 @@
             class="schedule-item"
             :style="{ height: tableCellHeight + 'px' }"
             v-for="(_, index) in week"
-            @dblclick="showDialog(value, index)"
+            @dblclick="showDialog(value, 30)"
             :key="index"
           ></td>
         </tr>
@@ -63,6 +63,7 @@
     <div v-if="dialogVisible">
       <add-schedule-dialog
         :visible="dialogVisible"
+        :current="current"
         @close-dialog="closeDialog"
       ></add-schedule-dialog>
     </div>
@@ -73,6 +74,7 @@
 import axios from "axios";
 import ScheduleItem from "@/components/ScheduleItem";
 import AddScheduleDialog from "@/components/AddScheduleDialog";
+import time from "./utils/time";
 
 export default {
   name: "Schedule",
@@ -83,32 +85,8 @@ export default {
       tableRect: null,
       tableCellHeight: 36,
       week: ["Sun.", "Mon.", "Tue.", "Wed.", "Thu.", "Fri.", "Sat."],
-      time: [
-        { value: "24", name: "12:00 AM" },
-        { value: "1", name: "1:00 AM" },
-        { value: "2", name: "2:00 AM" },
-        { value: "3", name: "3:00 AM" },
-        { value: "4", name: "4:00 AM" },
-        { value: "5", name: "5:00 AM" },
-        { value: "6", name: "6:00 AM" },
-        { value: "7", name: "7:00 AM" },
-        { value: "8", name: "8:00 AM" },
-        { value: "9", name: "9:00 AM" },
-        { value: "10", name: "10:00 AM" },
-        { value: "11", name: "11:00 AM" },
-        { value: "12", name: "12:00 PM" },
-        { value: "13", name: "1:00 PM" },
-        { value: "14", name: "2:00 PM" },
-        { value: "15", name: "3:00 PM" },
-        { value: "16", name: "4:00 PM" },
-        { value: "17", name: "5:00 PM" },
-        { value: "18", name: "6:00 PM" },
-        { value: "19", name: "7:00 PM" },
-        { value: "20", name: "8:00 PM" },
-        { value: "21", name: "9:00 PM" },
-        { value: "22", name: "10:00 PM" },
-        { value: "23", name: "11:00 PM" }
-      ],
+      time,
+      current: [],
       itemLists: [],
       dialogVisible: false
     };
@@ -157,10 +135,12 @@ export default {
         (timeDiff / (this.workTime * 60)) * (height - this.tableCellHeight)
       );
     },
-    showDialog(row, col) {
+    handleTime(value) {
+      return +value < 13 ? "AM" : "PM";
+    },
+    showDialog(row, time) {
       // col => sun, mon, tues, ... etc
-      if (row === 24) row = 0;
-      console.log(row, col);
+      this.current = [+row, +time];
       this.dialogVisible = true;
     },
     closeDialog({ visible }) {

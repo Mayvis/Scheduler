@@ -53,12 +53,17 @@
 
 <script>
 import axios from "axios";
+import time from "./utils/time";
 
 export default {
   props: {
     visible: {
       required: true,
       type: Boolean
+    },
+    current: {
+      required: true,
+      type: Array
     }
   },
   data() {
@@ -118,7 +123,8 @@ export default {
         { name: "Thr.", value: 4, toggle: false },
         { name: "Fri.", value: 5, toggle: false },
         { name: "Sat.", value: 6, toggle: false }
-      ]
+      ],
+      time
     };
   },
   created() {
@@ -126,12 +132,13 @@ export default {
   },
   methods: {
     setDefaultTime() {
-      const now = new Date();
-      now.setHours(8);
-      now.setMinutes(0);
-      now.setSeconds(0);
-      this.form.time[0] = now;
-      this.form.time[1] = now;
+      let start = new Date();
+      start.setHours(this.current[0]);
+      start.setMinutes(this.current[1]);
+      start.setSeconds(0);
+      this.form.time[0] = start;
+      this.form.time[1] = new Date(start.getTime() + 30 * 60 * 1000); // add 30 minutes
+      this.form.dayOfWeek[0] = this.current[1];
     },
     handleClose() {
       this.$confirm("Are you sure to close this dialog?")
