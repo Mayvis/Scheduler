@@ -40,7 +40,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.BIGINT,
         references: {
-          model: "File",
+          model: "files",
           key: "id"
         }
       },
