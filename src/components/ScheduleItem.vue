@@ -4,8 +4,8 @@
       <div class="top" @mousedown="handleDown">
         <span></span>
       </div>
-      <div :title="content.info" class="content" @mousedown="handleDragStart">
-        {{ resizeState ? "" : content.info }}
+      <div :title="content.name" class="content" @mousedown="handleDragStart">
+        {{ resizeState ? "" : content.name }}
       </div>
       <div class="bottom" @mousedown="handleDown">
         <span></span>
@@ -33,6 +33,10 @@ export default {
     content: {
       required: true,
       type: Object
+    },
+    rect: {
+      required: true,
+      type: DOMRect
     },
     workTime: {
       required: true,
@@ -65,9 +69,6 @@ export default {
     this.top = top;
     this.height = height;
   },
-  mounted() {
-    this.parentNode = document.getElementById("js-schedule-table");
-  },
   beforeDestroy() {
     this.removeEvent();
   },
@@ -76,7 +77,8 @@ export default {
       return {
         left: this.left + "px",
         top: this.top + "px",
-        height: this.height + "px"
+        height: this.height + "px",
+        backgroundColor: this.content.color
       };
     },
     filterCubes() {
@@ -275,10 +277,13 @@ export default {
       return index >= this.cubesLength ? this.cubesLength - 1 : index;
     },
     getPosition(event) {
-      const { x, y, height } = this.parentNode.getBoundingClientRect();
+      const { x, y, height } = this.rect;
       return {
         x: event.clientX - x,
-        y: event.clientY - y,
+        y:
+          event.clientY -
+          y +
+          (document.documentElement.scrollTop || document.body.scrollTop),
         height
       };
     },
