@@ -16,7 +16,13 @@ module.exports = (sequelize, DataTypes) => {
       },
       file_path: {
         allowNull: false,
-        type: DataTypes.STRING(255)
+        type: DataTypes.STRING(255),
+        defaultValue: "",
+        validate: {
+          notNull: { msg: "File must have a file path." },
+          notEmpty: { msg: "File path must not be empty." },
+          len: [1, 255]
+        }
       },
       created_at: {
         allowNull: false,
