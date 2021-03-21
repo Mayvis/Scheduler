@@ -3,7 +3,7 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Schedule extends Model {
     static associate({ File }) {
-      this.hasOne(File, { foreignKey: "id", sourceKey: "file_id" });
+      this.hasOne(File, { foreignKey: "id", sourceKey: "file_id", as: "file" });
     }
   }
   Schedule.init(

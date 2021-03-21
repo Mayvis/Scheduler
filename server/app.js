@@ -1,4 +1,4 @@
-const { sequelize, Schedule, File } = require("./models");
+const { sequelize, Schedule } = require("./models");
 const express = require("express");
 const cors = require("cors");
 const PORT = 5000;
@@ -15,7 +15,7 @@ app.get("/schedule", async (req, res) => {
       attributes: {
         exclude: ["file_id", "created_at", "updated_at"]
       },
-      include: [File]
+      include: ["file"]
     });
     return res.json(schedules);
   } catch (error) {
