@@ -35,7 +35,7 @@ module.exports = {
           ],
           interval: 3,
           day_of_week: [3, 5],
-          color: "#FFB700",
+          color: "#4EB4EF",
           file_id: files[0][Math.floor(Math.random() * files[0].length)].id,
           group_id_list: [1, 2],
           period: true
