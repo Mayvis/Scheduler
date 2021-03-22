@@ -107,7 +107,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         defaultValue: true,
         validate: {
-          notNulle: { msg: "Schedule must have period." },
+          notNull: { msg: "Schedule must have period." },
           notEmpty: { msg: "Schedule's period must not be empty." }
         }
       },
